@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+
+
+
+{% block main_content %}
+    <style>
+
+        td {
+            border: 2px black solid;
+            height: 2em;
+            width: 2em;
+            font-weight: bold;
+            font-size: xx-large;
+        }
+    </style>
+
+    <table class="mt-5 mx-auto border p-2" id="boggle_board">
+        <tbody>
+        <tr>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+        </tbody>
+    </table>
+
+    <button class="btn btn-success btn-lg mt-5" id="generate_board">Generate Board</button>
+{% endblock %}
+
+{% block extra_scripts %}
+    <script>
+        $(document).ready(function () {
+            let table = $("#boggle_board")[0];
+
+            $("#generate_board").click(function () {
+                $.post("{{ url_for("generate_board") }}", {}).done(function (data) {
+                    for (let row = 0; row < 4; row++) {
+                        for (let column = 0; column < 4; column++) {
+                            table.rows[row].cells[column].innerHTML = data[row][column];
+                        }
+                    }
+                })
+
+            })
+        });
+    </script>
+{% endblock %}
