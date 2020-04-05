@@ -2,7 +2,7 @@ import random
 
 from flask import Flask, render_template, jsonify
 
-app = Flask(__name__)
+application = Flask(__name__)
 dice = [
     ['R', 'I', 'F', 'O', 'B', 'X'],
     ['I', 'F', 'E', 'H', 'E', 'Y'],
@@ -23,13 +23,13 @@ dice = [
 ]
 
 
-@app.route('/')
+@application.route('/')
 def index():
     generate_board()
     return render_template("index.html")
 
 
-@app.route("/generate_board", methods=["POST"])
+@application.route("/generate_board", methods=["POST"])
 def generate_board():
     board_dice = random.sample(dice, len(dice))
     board = []
@@ -41,4 +41,4 @@ def generate_board():
 
 
 if __name__ == '__main__':
-    app.run()
+    application.run()
