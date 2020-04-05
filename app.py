@@ -1,6 +1,6 @@
 import random
 
-from flask import Flask, render_template, jsonify
+from flask import Flask, render_template, jsonify, redirect, url_for
 from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.ext.hybrid import hybrid_property
@@ -12,7 +12,7 @@ application = Flask(__name__)
 application.config.from_object(Config)
 
 db = SQLAlchemy(application)
-migrate = Migrate(application, db)
+migrate = Migrate(application, db, Config.MIGRATIONS_DIR)
 
 
 class BoggleBoard(db.Model):
@@ -80,6 +80,9 @@ def generate_board():
 @application.route('/join/<game_id>')
 def board(game_id):
     boggle_board = BoggleBoard.query.filter_by(id=game_id).first()
+
+    if not boggle_board:
+        return redirect(url_for("index"))
 
     return render_template("index.html", game_id=boggle_board.id, dice=boggle_board.board)
 
