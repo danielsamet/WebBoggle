@@ -24,7 +24,7 @@
 
 <div class="container text-center mt-4" style="min-width: 300px; max-width: 770px; height: auto;">
     <div class="alert alert-primary" role="alert">
-        <h2 class="alert-heading">WebBoggle</h2>
+        <a class="h2 alert-heading" href="{{ url_for("index") }}">WebBoggle</a>
         <hr>
         <p class="mb-0">Generate boggle boards and share them with your friends so that you can play remotely!</p>
     </div>
@@ -34,7 +34,7 @@
 
 </div>
 
-<p class="w-100 text-center" style="bottom: 0; height: 25px;">Copyright 2020 &copy; Daniel Samet</p>
+<p class="w-100 text-center" style="bottom: 0; height: 25px;">Copyright <a href="https://github.com/CouchMaster789/WebBoggle">WebBoggle</a> 2020 &copy; <a href="https://github.com/CouchMaster789">Daniel Samet</a></p>
 
 {% block extra_scripts %}{% endblock extra_scripts %}
 
