@@ -29,9 +29,17 @@ class BoggleBoard(db.Model):
     @hybrid_property
     def board(self):
         table = []
+        q_offset = 0
 
         for i in range(4):
-            table.append([col for col in self.dice[i * 4:(i + 1) * 4]])
+            row = []
+            for col in range(4):
+                die = self.dice[i * 4 + col + q_offset]
+                if die == "Q":
+                    die = "Qu"
+                    q_offset += 1
+                row.append(die)
+            table.append(row)
 
         return table
 
@@ -78,13 +86,13 @@ def generate_board():
 
 
 @application.route('/join/<game_id>')
-def board(game_id):
-    boggle_board = BoggleBoard.query.filter_by(id=game_id).first()
+def boggle_board(game_id):
+    board = BoggleBoard.query.filter_by(id=game_id).first()
 
-    if not boggle_board:
+    if not board:
         return redirect(url_for("index"))
 
-    return render_template("index.html", game_id=boggle_board.id, dice=boggle_board.board)
+    return render_template("index.html", game_id=board.id, dice=board.board)
 
 
 if __name__ == '__main__':
