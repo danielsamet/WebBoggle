@@ -20,14 +20,18 @@
 </head>
 <body>
 
-<div class="container text-center mt-4">
-    <h1>WebBoggle</h1>
-    <h5>Hello there, welcome to part 2 in my web game series. May we all find good web games during this difficult
-        time.</h5>
+<div class="container text-center mt-4" style="min-width: 300px; max-width: 770px;">
+    <div class="alert alert-primary" role="alert">
+        <h2 class="alert-heading">WebBoggle</h2>
+        <hr>
+        <p class="mb-0">Generate boggle boards and share them with your friends so that you can play remotely!</p>
+    </div>
     {% block main_content %}
 
     {% endblock %}
+
 </div>
+<p class="w-100 text-center" style="position: fixed; bottom: 0;">Copyright 2020 &copy; Daniel Samet</p>
 
 {% block extra_scripts %}{% endblock extra_scripts %}
 

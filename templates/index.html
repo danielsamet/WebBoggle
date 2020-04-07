@@ -42,13 +42,12 @@
         </tbody>
     </table>
 
-    <button class="btn btn-success btn-lg mt-5" id="generate_board">Generate Board</button>
+    <button class="btn btn-success btn-lg font-weight-bold mt-5" id="generate_board">Generate Board</button>
 
-    <div class="mx-auto card m-5" style="max-width: 18rem;">
-        <div class="card-body">
-            <h5 class="card-title">Invite a Friend</h5>
-            <p class="card-text"><a class="font-weight-bold" href="{{ url_for("board", game_id=game_id) }}" id="game_link"></a></p>
-        </div>
+    <div class="alert alert-primary mx-auto m-5" style="max-width: 18rem;">
+        <h5 class="card-title">Invite a Friend</h5>
+        <p class="card-text"><a class="font-weight-bold" href="{{ url_for("boggle_board", game_id=game_id) }}"
+                                id="game_link"></a></p>
     </div>
 {% endblock %}
 
