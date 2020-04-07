@@ -45,9 +45,23 @@
     <button class="btn btn-success btn-lg font-weight-bold mt-5" id="generate_board">Generate Board</button>
 
     <div class="alert alert-primary mx-auto m-5" style="max-width: 18rem;">
-        <h5 class="card-title">Invite a Friend</h5>
-        <p class="card-text"><a class="font-weight-bold" href="{{ url_for("boggle_board", game_id=game_id) }}"
-                                id="game_link"></a></p>
+        <label for="game_link" class="h5 mb-3">Invite a Friend</label>
+        <p class="">
+            <a class="font-weight-bold" href="{{ url_for("boggle_board", game_id=game_id) }}"
+               id="game_link">
+            </a>
+        </p>
+
+        <hr>
+
+        <label for="game_code" class="h5 mb-3">Join a Game</label>
+        <div class="input-group">
+            <input type="text" class="form-control" placeholder="Game Code" id="game_code">
+            <div class="input-group-append">
+                <button class="btn btn-outline-secondary" type="button" id="join_game">Join</button>
+            </div>
+        </div>
+
     </div>
 {% endblock %}
 
@@ -77,7 +91,10 @@
                     game_link.attr("href", "{{ url_for("boggle_board", game_id=1234) }}".replace("1234", data["game_id"]))
 
                 })
+            });
 
+            $("#join_game").click(function () {
+                window.location.href = "{{ url_for("boggle_board", game_id=1234) }}".replace("1234", $("#game_code").val());
             })
         });
     </script>
