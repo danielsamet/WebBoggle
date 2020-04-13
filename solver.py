@@ -5,7 +5,7 @@ from app import BoggleBoard
 from config import Config
 
 
-def generate_valid_words(board):
+def generate_valid_words(board, dictionary_words):
     valid_words = []
 
     # TODO: fill in algorithm here
@@ -22,8 +22,11 @@ if __name__ == '__main__':
 
     boggle_board = BoggleBoard(board)
 
+    with open("words_alpha.txt") as file:
+        words = file.read().split("\n")
+
     start = time.time()
-    word_list = generate_valid_words(boggle_board.board)
+    word_list = generate_valid_words(boggle_board.board, words)
 
     end = time.time()
 
