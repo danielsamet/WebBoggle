@@ -1,0 +1,142 @@
+{% extends "base.html" %}
+
+
+{% block main_content %}
+    <style>
+
+        td {
+            border: 2px black solid;
+            height: 2em;
+            width: 2em;
+            font-weight: bold;
+            font-size: xx-large;
+        }
+    </style>
+
+    <div class="row mt-5">
+        <div class="col-sm-4 my-auto">
+        </div>
+
+        <table class="col-sm-4 mx-auto border p-2" id="boggle_board" style="max-width: 16em;">
+            <tbody>
+            <tr>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+            </tbody>
+        </table>
+
+        <div class="col-sm-4 my-auto">
+            <div class="accordion" id="accordionExample">
+                <div class="card">
+                    <div class="card-header" id="headingOne">
+                        <h2 class="mb-0">
+                            <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapseOne"
+                                    aria-expanded="true" aria-controls="collapseOne">
+                                <b>Valid Words</b> <span id="word_count"></span>
+                            </button>
+                        </h2>
+                    </div>
+
+                    <div id="collapseOne" class="collapse" data-parent="#accordionExample">
+                        <div class="card-body overflow-auto" style="height: 10em;" id="word_container">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <button class="btn btn-success btn-lg font-weight-bold mt-5" id="generate_board">Generate Board</button>
+
+    <div class="alert alert-primary mx-auto m-5" style="max-width: 18rem;">
+        <label for="game_link" class="h5 mb-3">Share Game</label>
+        <p class="">
+            <a class="font-weight-bold" href="{{ url_for("routes.boggle_board", game_id=game_id) }}"
+               id="game_link">
+            </a>
+        </p>
+
+        <hr>
+
+        <label for="game_code" class="h5 mb-3">Join Game</label>
+        <div class="input-group">
+            <input type="text" class="form-control" placeholder="Game Code" id="game_code"
+                   style="text-transform: uppercase;" maxlength="6">
+            <div class="input-group-append">
+                <button class="btn btn-success" type="button" id="join_game">Join</button>
+            </div>
+        </div>
+
+    </div>
+{% endblock %}
+
+{% block extra_scripts %}
+    <script>
+
+        function build_board(table, board) {
+            for (let row = 0; row < 4; row++)
+                for (let column = 0; column < 4; column++)
+                    table.rows[row].cells[column].innerHTML = board[row][column];
+        }
+
+        $(document).ready(function () {
+            let table = $("#boggle_board")[0];
+            let game_link = $("#game_link");
+            let word_count = $("#word_count");
+            let word_container = $("#word_container");
+
+            {% if game_id %}
+                build_board(table, {{ dice|safe }});
+                {# TODO: investigate method to display the dice without using the safe filter #}
+                game_link.text("{{ game_id }}");
+            {% endif %}
+
+            $("#generate_board").click(function () {
+                $.post("{{ url_for("routes.generate_board") }}", {}).done(function (data) {
+                    // build the board
+                    build_board(table, data["board"]);
+
+                    // update the game link
+                    game_link.text(data["game_id"]);
+                    game_link.attr("href", "{{ url_for("routes.boggle_board", game_id=1234) }}".replace("1234", data["game_id"]));
+
+                    // update valid words section
+                    word_container.html("");
+                    word_count.text("(" + data["words"].length + ")");
+                    word_container.append("<ul class=\"list-group\" id=\"word_list\"></ul>");
+                    let word_list = $("#word_list");
+                    data["words"].forEach((word) => {
+                        word_list.append("<li class='list-group-item font-weight-bold'>" + word.toLowerCase() + "</li>")
+                    });
+                    word_container.append("<p class=\"mb-0 mt-4\" style=\"font-style: italic;\">As per the Collins Scrabble Dictionary 2019</p>");
+                })
+            });
+
+            $("#join_game").click(function () {
+                window.location.href = "{{ url_for("routes.boggle_board", game_id=1234) }}".replace("1234", $("#game_code").val());
+            })
+        });
+    </script>
+{% endblock %}
