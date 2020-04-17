@@ -1,5 +1,6 @@
+import random
+
 from flask import current_app
-from sqlalchemy.ext.hybrid import hybrid_property
 
 from app import db
 from app.solver import generate_valid_words
@@ -13,7 +14,11 @@ class BoggleBoard(db.Model):
 
     dice = db.Column(db.String(17))  # TODO: consider a more normalised form since "Qu" will not always be present
 
-    def __init__(self, board):
+    def __init__(self, board=None):
+        if not board:
+            board_dice = random.sample(current_app.config["DICE"], len(current_app.config["DICE"]))
+            board = [[random.choice(board_dice.pop()) for __ in range(4)] for _ in range(4)]
+
         self.id = generate_uuid()
         self.dice = "".join(["".join(row) for row in board])
 
@@ -35,6 +40,5 @@ class BoggleBoard(db.Model):
 
         return table
 
-    @hybrid_property
-    def all_words(self):
-        return generate_valid_words(self.generate_board(), current_app.dictionary)
+    def generate_words(self, min_word_size=3):
+        return generate_valid_words(self.generate_board(), current_app.dictionary, min_word_size=min_word_size)

@@ -28,7 +28,7 @@ def generate_board():
     db.session.add(boggle_board)
     db.session.commit()
 
-    return jsonify({"game_id": boggle_board.id, "board": board, "words": sorted(boggle_board.all_words)}), 200
+    return jsonify({"game_id": boggle_board.id, "board": board, "words": sorted(boggle_board.generate_words())}), 200
 
 
 @bp.route('/join/<game_id>')
@@ -38,4 +38,4 @@ def boggle_board(game_id):
     if not board:
         return redirect(url_for("index"))
 
-    return render_template("index.html", game_id=board.id, dice=board.board)
+    return render_template("index.html", game_id=board.id, dice=board.generate_board(), words=sorted(board.generate_words()))

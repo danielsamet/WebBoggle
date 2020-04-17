@@ -8,21 +8,21 @@ db = SQLAlchemy()
 migrate = Migrate()
 
 
-def create_app():
+def create_app(config_object=Config):
     app = Flask(__name__)
-    app.config.from_object(Config)
+    app.config.from_object(config_object)
 
     db.init_app(app)
-    migrate.init_app(app, db, Config.MIGRATIONS_DIR)
+    migrate.init_app(app, db, config_object.MIGRATIONS_DIR)
 
     from app.routes import bp
     app.register_blueprint(bp)
 
-    with open("words_alpha_collins.txt", encoding="utf8") as file:
+    with open(config_object.DICTIONARY_ADDRESS, encoding="utf8") as file:
         words = file.read().split("\n")
 
     from app.solver import build_word_dictionary
-    app.dictionary = build_word_dictionary(words)
+    app.dictionary = build_word_dictionary(words, config_object.MIN_WORD_SIZE)
 
     return app
 

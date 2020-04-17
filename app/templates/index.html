@@ -3,7 +3,6 @@
 
 {% block main_content %}
     <style>
-
         td {
             border: 2px black solid;
             height: 2em;
@@ -94,11 +93,22 @@
 
 {% block extra_scripts %}
     <script>
-
         function build_board(table, board) {
             for (let row = 0; row < 4; row++)
                 for (let column = 0; column < 4; column++)
                     table.rows[row].cells[column].innerHTML = board[row][column];
+        }
+
+        function update_valid_words(word_container, word_count, words) {
+            word_container.html("");
+            word_count.text("(" + words.length + ")");
+            word_container.append("<ul class=\"list-group\" id=\"word_list\"></ul>");
+
+            let word_list = $("#word_list");
+            words.forEach((word) => {
+                word_list.append("<li class='list-group-item font-weight-bold'>" + word.toLowerCase() + "</li>")
+            });
+            word_container.append("<p class=\"mb-0 mt-4\" style=\"font-style: italic;\">As per the Collins Scrabble Dictionary 2019</p>");
         }
 
         $(document).ready(function () {
@@ -107,11 +117,12 @@
             let word_count = $("#word_count");
             let word_container = $("#word_container");
 
-            {% if game_id %}
+            {% if game_id -%}
                 build_board(table, {{ dice|safe }});
                 {# TODO: investigate method to display the dice without using the safe filter #}
                 game_link.text("{{ game_id }}");
-            {% endif %}
+                update_valid_words(word_container, word_count, {{ words|safe }});
+            {%- endif %}
 
             $("#generate_board").click(function () {
                 $.post("{{ url_for("routes.generate_board") }}", {}).done(function (data) {
@@ -122,15 +133,10 @@
                     game_link.text(data["game_id"]);
                     game_link.attr("href", "{{ url_for("routes.boggle_board", game_id=1234) }}".replace("1234", data["game_id"]));
 
-                    // update valid words section
-                    word_container.html("");
-                    word_count.text("(" + data["words"].length + ")");
-                    word_container.append("<ul class=\"list-group\" id=\"word_list\"></ul>");
-                    let word_list = $("#word_list");
-                    data["words"].forEach((word) => {
-                        word_list.append("<li class='list-group-item font-weight-bold'>" + word.toLowerCase() + "</li>")
-                    });
-                    word_container.append("<p class=\"mb-0 mt-4\" style=\"font-style: italic;\">As per the Collins Scrabble Dictionary 2019</p>");
+                    window.history.pushState('join', 'Join', '/join/' + data["game_id"]);
+                    {#TODO: investigate how to change the url but maintain the ability to traverse back and forth between games using the back and forward buttons#}
+
+                    update_valid_words(word_container, word_count, data["words"]);
                 })
             });
 

@@ -119,11 +119,12 @@ if __name__ == '__main__':
         print(f"{len(word_list)} words were generated in {end - start:.6f} seconds")
 
 
-    with open("words_alpha_collins.txt", encoding="utf8") as file:
+    with open("../words_alpha_collins.txt", encoding="utf8") as file:
         words = file.read().split("\n")
 
     start = time.time()
     words = build_word_dictionary(words)
+    print(str(words)[:1000])
     print(time.time() - start)
 
     print("\nPreconfigured board:")
