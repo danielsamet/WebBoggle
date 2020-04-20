@@ -24,6 +24,12 @@ def create_app(config_object=Config):
     from app.solver import build_word_dictionary
     app.dictionary = build_word_dictionary(words, config_object.MIN_WORD_SIZE)
 
+    @app.shell_context_processor  # adds automatic context to the shell
+    def make_shell_context():
+        from app.models import BoggleBoard
+
+        return dict(app=app, db=db, BoggleBoard=BoggleBoard)
+
     return app
 
 

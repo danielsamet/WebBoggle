@@ -14,6 +14,11 @@ class BoggleBoard(db.Model):
 
     dice = db.Column(db.String(17))  # TODO: consider a more normalised form since "Qu" will not always be present
 
+    # numbers below are used for identifying difficulty of boards
+    valid_3_words = db.Column(db.Integer)  # stores number of valid 3 letter words attainable through the above dice
+    valid_4_words = db.Column(db.Integer)  # stores number of valid 4 letter words attainable through the above dice
+    valid_5_words = db.Column(db.Integer)  # stores number of valid 5 letter words attainable through the above dice
+
     def __init__(self, board=None):
         if not board:
             board_dice = random.sample(current_app.config["DICE"], len(current_app.config["DICE"]))
