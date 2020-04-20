@@ -1,7 +1,6 @@
-import random
 import time
 
-from app.config import Config
+from app import create_app
 
 
 def generate_valid_words(board, dictionary_words, min_word_size=3):
@@ -94,23 +93,9 @@ def build_word_dictionary(word_list, min_word_size=3):
 if __name__ == '__main__':
     from app.models import BoggleBoard
 
-    def generate_board(dice=None):
-        if not dice:
-            board_dice = random.sample(Config.DICE, len(Config.DICE))
-
-            board = []
-            for _ in range(4):
-                board.append([random.choice(board_dice.pop()) for __ in range(4)])
-
-        else:
-            dice = dice  # in case of the lower case u in Qu
-            board = [[dice[i + j] for j in range(4)] for i in range(4)]
-
-        return BoggleBoard(board)
-
-
     def run_generator(board):
         start = time.time()
+        board.pretty_print()
         word_list = generate_valid_words(board.generate_board(uppercase_u=True), words)
         end = time.time()
 
@@ -124,10 +109,11 @@ if __name__ == '__main__':
     words = build_word_dictionary(words)
     print(time.time() - start)
 
-    print("\nPreconfigured board:")
-    print("-" * 20)
-    run_generator(generate_board("LOPGPOCIHBIEGKLS"))
+    with create_app().app_context():
+        print("\nPreconfigured board:")
+        print("-" * 20)
+        run_generator(BoggleBoard("LOPGPOCIHBIEGKLS"))
 
-    print("\nRandom board:")
-    print("-" * 20)
-    run_generator(generate_board())
+        print("\nRandom board:")
+        print("-" * 20)
+        run_generator(BoggleBoard())

@@ -19,13 +19,19 @@ class BoggleBoard(db.Model):
     valid_4_words = db.Column(db.Integer)  # stores number of valid 4 letter words attainable through the above dice
     valid_5_words = db.Column(db.Integer)  # stores number of valid 5 letter words attainable through the above dice
 
-    def __init__(self, board=None):
-        if not board:
-            board_dice = random.sample(current_app.config["DICE"], len(current_app.config["DICE"]))
-            board = [[random.choice(board_dice.pop()) for __ in range(4)] for _ in range(4)]
-
+    def __init__(self, dice=None, calculate_all_words=False):
         self.id = generate_uuid()
-        self.dice = "".join(["".join(row) for row in board])
+
+        if not dice:
+            dice = "".join(random.choice(die) for die in
+                           random.sample(current_app.config["DICE"], len(current_app.config["DICE"])))
+
+        self.dice = dice
+
+        if calculate_all_words:
+            self.valid_3_words = len(self.generate_words(3))
+            self.valid_4_words = len(self.generate_words(3))
+            self.valid_5_words = len(self.generate_words(3))
 
     def generate_board(self, uppercase_u=False):
         """returns a 2 dimensional array for the dice"""
@@ -45,5 +51,17 @@ class BoggleBoard(db.Model):
 
         return table
 
+    def pretty_print(self):
+        for row in self.generate_board():
+            print(row)
+
     def generate_words(self, min_word_size=3):
         return generate_valid_words(self.generate_board(), current_app.dictionary, min_word_size=min_word_size)
+
+
+class WordCounts(db.Model):
+    __tablename__ = "board_word_counts"
+
+    id = db.Column(db.String(6), primary_key=True)
+
+    min_word_size = db.Column(db.Integer)
