@@ -4,30 +4,6 @@ from app import create_app
 
 
 def generate_valid_words(board, dictionary_words, min_word_size=3):
-    def get_surrounding_nodes(coordinates):
-        nodes = []
-
-        if coordinates[0] > 0:
-            if coordinates[1] > 0:
-                nodes.append((coordinates[0] - 1, coordinates[1] - 1))  # top left
-            nodes.append((coordinates[0] - 1, coordinates[1]))  # top middle
-            if coordinates[1] < 3:
-                nodes.append((coordinates[0] - 1, coordinates[1] + 1))  # top right
-
-        if coordinates[1] > 0:
-            nodes.append((coordinates[0], coordinates[1] - 1))  # left
-        if coordinates[1] < 3:
-            nodes.append((coordinates[0], coordinates[1] + 1))  # right
-
-        if coordinates[0] < 3:
-            if coordinates[1] > 0:
-                nodes.append((coordinates[0] + 1, coordinates[1] - 1))  # top left
-            nodes.append((coordinates[0] + 1, coordinates[1]))  # top middle
-            if coordinates[1] < 3:
-                nodes.append((coordinates[0] + 1, coordinates[1] + 1))  # top right
-
-        return nodes
-
     def get_words(coordinates, word_dictionary, traversed_nodes=None):
         """returns all words attainable from a specified coordinate"""
 
@@ -45,7 +21,7 @@ def generate_valid_words(board, dictionary_words, min_word_size=3):
             if len(new_word_dictionary[0]) >= min_word_size and new_word_dictionary[0] not in valid_words:
                 valid_words.append(new_word_dictionary[0])
 
-        for surrounding_node in set(get_surrounding_nodes(coordinates)) - set(traversed_nodes):
+        for surrounding_node in set(surrounding_nodes_map[coordinates]) - set(traversed_nodes):
             next_letter = board[surrounding_node[0]][surrounding_node[1]]
             next_letter = next_letter if next_letter != "QU" else "Q"
 
@@ -56,6 +32,7 @@ def generate_valid_words(board, dictionary_words, min_word_size=3):
                     continue
 
     valid_words = []
+    surrounding_nodes_map = _generate_surrounding_nodes(4)
 
     for row_index in range(len(board)):
         for col_index in range(len(board[row_index])):
@@ -94,13 +71,50 @@ def build_word_dictionary(word_list, min_word_size=3):
     return word_dictionary
 
 
+def _get_surrounding_nodes(coordinates):
+    nodes = []
+
+    if coordinates[0] > 0:
+        if coordinates[1] > 0:
+            nodes.append((coordinates[0] - 1, coordinates[1] - 1))  # top left
+        nodes.append((coordinates[0] - 1, coordinates[1]))  # top middle
+        if coordinates[1] < 3:
+            nodes.append((coordinates[0] - 1, coordinates[1] + 1))  # top right
+
+    if coordinates[1] > 0:
+        nodes.append((coordinates[0], coordinates[1] - 1))  # left
+    if coordinates[1] < 3:
+        nodes.append((coordinates[0], coordinates[1] + 1))  # right
+
+    if coordinates[0] < 3:
+        if coordinates[1] > 0:
+            nodes.append((coordinates[0] + 1, coordinates[1] - 1))  # top left
+        nodes.append((coordinates[0] + 1, coordinates[1]))  # top middle
+        if coordinates[1] < 3:
+            nodes.append((coordinates[0] + 1, coordinates[1] + 1))  # top right
+
+    return nodes
+
+
+def _generate_surrounding_nodes(board_size=4):
+    """generates a dictionary of precomputed surrounding nodes"""
+
+    surrounding_nodes = {}
+
+    for row in range(board_size):
+        for column in range(board_size):
+            surrounding_nodes[row, column] = _get_surrounding_nodes((row, column))
+
+    return surrounding_nodes
+
+
 if __name__ == '__main__':  # TEST CODE
     from app.models import BoggleBoard
 
 
     def run_generator(board):
         start = time.time()
-        board.pretty_print()
+        # board.pretty_print()
         word_list = generate_valid_words(board.generate_board(uppercase_u=True), words)
         end = time.time()
 
