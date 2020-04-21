@@ -30,8 +30,8 @@ class BoggleBoard(db.Model):
 
         if calculate_all_words:
             self.valid_3_words = len(self.generate_words(3))
-            self.valid_4_words = len(self.generate_words(3))
-            self.valid_5_words = len(self.generate_words(3))
+            self.valid_4_words = len(self.generate_words(4))
+            self.valid_5_words = len(self.generate_words(5))
 
     def generate_board(self, uppercase_u=False):
         """returns a 2 dimensional array for the dice"""

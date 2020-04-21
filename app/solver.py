@@ -34,30 +34,27 @@ def generate_valid_words(board, dictionary_words, min_word_size=3):
         if not traversed_nodes:
             traversed_nodes = [coordinates]
 
-        words = []
-        if word_dictionary[0]:
-            if len(word_dictionary[0]) >= min_word_size:
-                words = [word_dictionary[0]]
+        curr_letter = board[coordinates[0]][coordinates[1]]
+        new_word_dictionary = word_dictionary[1][curr_letter]
 
-        for surrounding_node in set(get_surrounding_nodes(coordinates)) - set(traversed_nodes):
-            if board[coordinates[0]][coordinates[1]] in word_dictionary[1]:
-                words.extend(
-                    get_words(
-                        surrounding_node,
-                        word_dictionary[1][board[coordinates[0]][coordinates[1]]],
-                        traversed_nodes + [surrounding_node]
-                    )
-                )
+        if new_word_dictionary[0]:
+            if len(new_word_dictionary[0]) >= min_word_size and new_word_dictionary[0] not in valid_words:
+                valid_words.append(new_word_dictionary[0])
 
-        return set(words)
+        if board[coordinates[0]][coordinates[1]] in word_dictionary[1]:
+            for surrounding_node in set(get_surrounding_nodes(coordinates)) - set(traversed_nodes):
+                try:
+                    get_words(surrounding_node, new_word_dictionary, traversed_nodes + [surrounding_node])
+                except KeyError:
+                    continue
 
     valid_words = []
 
     for row_index in range(len(board)):
         for col_index in range(len(board[row_index])):
-            valid_words.extend(get_words((row_index, col_index), dictionary_words))
+            get_words((row_index, col_index), dictionary_words)
 
-    return list(set(valid_words))
+    return valid_words
 
 
 def build_word_dictionary(word_list, min_word_size=3):
@@ -93,9 +90,9 @@ def build_word_dictionary(word_list, min_word_size=3):
 if __name__ == '__main__':
     from app.models import BoggleBoard
 
+
     def run_generator(board):
         start = time.time()
-        board.pretty_print()
         word_list = generate_valid_words(board.generate_board(uppercase_u=True), words)
         end = time.time()
 
