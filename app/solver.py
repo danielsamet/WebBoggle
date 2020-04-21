@@ -114,11 +114,30 @@ if __name__ == '__main__':  # TEST CODE
 
     def run_generator(board):
         start = time.time()
-        # board.pretty_print()
-        word_list = generate_valid_words(board.generate_board(uppercase_u=True), words)
+        generate_valid_words(board.generate_board(uppercase_u=True), words)
         end = time.time()
 
-        print(f"{len(word_list)} words were generated in {end - start:.6f} seconds")
+        return end - start
+
+
+    def calculate_solve_speed(dice=None, iterations=1000):
+        """runs the generator on a boggle several times to calculate average run times"""
+
+        times = []
+        for _ in range(iterations):
+            times.append(run_generator(BoggleBoard(dice)))
+
+        print("-" * 30)
+        print("SOLVE SPEED STATS")
+        print("-" * 30)
+        print(f"Iterations:\t\t{iterations}")
+        print("-" * 30)
+        print(f"Min time:\t\t{min(times):.8f}")
+        print(f"Max time:\t\t{max(times):.8f}")
+        print(f"Average time:\t{sum(times) / len(times):.8f}")
+        print("-" * 30)
+        print(f"Total Time:\t\t{sum(times):.8f}")
+        print("-" * 30)
 
 
     with open("words_alpha_collins.txt", encoding="utf8") as file:
@@ -129,11 +148,4 @@ if __name__ == '__main__':  # TEST CODE
     print(time.time() - start)
 
     with create_app().app_context():
-        print("\nPreconfigured board:")
-        print("-" * 20)
-        run_generator(BoggleBoard("LOPGPOCIHBIEGKLS"))
-        run_generator(BoggleBoard("EDRQuHIECTSAZNLSE"))
-
-        print("\nRandom board:")
-        print("-" * 20)
-        run_generator(BoggleBoard())
+        calculate_solve_speed("LOPGPOCIHBIEGKLS")
