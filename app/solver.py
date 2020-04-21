@@ -35,14 +35,21 @@ def generate_valid_words(board, dictionary_words, min_word_size=3):
             traversed_nodes = [coordinates]
 
         curr_letter = board[coordinates[0]][coordinates[1]]
-        new_word_dictionary = word_dictionary[1][curr_letter]
+
+        if curr_letter == "QU":
+            new_word_dictionary = word_dictionary[1]["Q"][1]["U"]
+        else:
+            new_word_dictionary = word_dictionary[1][curr_letter]
 
         if new_word_dictionary[0]:
             if len(new_word_dictionary[0]) >= min_word_size and new_word_dictionary[0] not in valid_words:
                 valid_words.append(new_word_dictionary[0])
 
-        if board[coordinates[0]][coordinates[1]] in word_dictionary[1]:
-            for surrounding_node in set(get_surrounding_nodes(coordinates)) - set(traversed_nodes):
+        for surrounding_node in set(get_surrounding_nodes(coordinates)) - set(traversed_nodes):
+            next_letter = board[surrounding_node[0]][surrounding_node[1]]
+            next_letter = next_letter if next_letter != "QU" else "Q"
+
+            if next_letter in new_word_dictionary[1]:
                 try:
                     get_words(surrounding_node, new_word_dictionary, traversed_nodes + [surrounding_node])
                 except KeyError:
@@ -93,6 +100,7 @@ if __name__ == '__main__':  # TEST CODE
 
     def run_generator(board):
         start = time.time()
+        board.pretty_print()
         word_list = generate_valid_words(board.generate_board(uppercase_u=True), words)
         end = time.time()
 
@@ -110,6 +118,7 @@ if __name__ == '__main__':  # TEST CODE
         print("\nPreconfigured board:")
         print("-" * 20)
         run_generator(BoggleBoard("LOPGPOCIHBIEGKLS"))
+        run_generator(BoggleBoard("EDRQuHIECTSAZNLSE"))
 
         print("\nRandom board:")
         print("-" * 20)
