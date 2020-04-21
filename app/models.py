@@ -14,10 +14,7 @@ class BoggleBoard(db.Model):
 
     dice = db.Column(db.String(17))  # TODO: consider a more normalised form since "Qu" will not always be present
 
-    # numbers below are used for identifying difficulty of boards
-    valid_3_words = db.Column(db.Integer)  # stores number of valid 3 letter words attainable through the above dice
-    valid_4_words = db.Column(db.Integer)  # stores number of valid 4 letter words attainable through the above dice
-    valid_5_words = db.Column(db.Integer)  # stores number of valid 5 letter words attainable through the above dice
+    word_counts = db.relationship("WordCount", back_populates="board")
 
     def __init__(self, dice=None, calculate_all_words=False):
         self.id = generate_uuid()
@@ -29,9 +26,12 @@ class BoggleBoard(db.Model):
         self.dice = dice
 
         if calculate_all_words:
-            self.valid_3_words = len(self.generate_words(3))
-            self.valid_4_words = len(self.generate_words(4))
-            self.valid_5_words = len(self.generate_words(5))
+            self.word_counts.append(WordCount(3, len(self.generate_words(3))))
+            self.word_counts.append(WordCount(4, len(self.generate_words(4))))
+            self.word_counts.append(WordCount(5, len(self.generate_words(5))))
+
+    def __repr__(self):
+        return f"<BoggleBoard {self.id}>"
 
     def generate_board(self, uppercase_u=False):
         """returns a 2 dimensional array for the dice"""
@@ -59,9 +59,20 @@ class BoggleBoard(db.Model):
         return generate_valid_words(self.generate_board(), current_app.dictionary, min_word_size=min_word_size)
 
 
-class WordCounts(db.Model):
+class WordCount(db.Model):
     __tablename__ = "board_word_counts"
 
     id = db.Column(db.String(6), primary_key=True)
 
+    board_id = db.Column(db.Integer, db.ForeignKey("boggle_boards.id"))
+    board = db.relationship("BoggleBoard", back_populates="word_counts")
+
     min_word_size = db.Column(db.Integer)
+    num_words = db.Column(db.Integer)
+
+    def __init__(self, min_word_size, num_words):
+        self.min_word_size = min_word_size
+        self.num_words = num_words
+
+    def __repr__(self):
+        return f"<Word Count {self.id} for BoggleBoard {self.board.id}>"

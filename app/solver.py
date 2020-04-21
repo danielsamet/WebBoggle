@@ -87,7 +87,7 @@ def build_word_dictionary(word_list, min_word_size=3):
     return word_dictionary
 
 
-if __name__ == '__main__':
+if __name__ == '__main__':  # TEST CODE
     from app.models import BoggleBoard
 
 
