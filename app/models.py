@@ -26,9 +26,19 @@ class BoggleBoard(db.Model):
         self.dice = dice
 
         if calculate_all_words:
-            self.word_counts.append(WordCount(3, len(self.generate_words(3))))
-            self.word_counts.append(WordCount(4, len(self.generate_words(4))))
-            self.word_counts.append(WordCount(5, len(self.generate_words(5))))
+            """calculates and stores word counts for the solved board"""
+
+            word_counts = {}
+
+            for word in self.generate_words():
+                word_len = len(word)
+                if word_len in word_counts:
+                    word_counts[word_len] += 1
+                else:
+                    word_counts[word_len] = 1
+
+            for word_size, word_count in word_counts.items():
+                self.word_counts.append(WordCount(word_size, word_count))
 
     def __repr__(self):
         return f"<BoggleBoard {self.id}>"
@@ -68,11 +78,11 @@ class WordCount(db.Model):
     board_id = db.Column(db.Integer, db.ForeignKey("boggle_boards.id"))
     board = db.relationship("BoggleBoard", back_populates="word_counts")
 
-    min_word_size = db.Column(db.Integer)
+    word_size = db.Column(db.Integer)
     num_words = db.Column(db.Integer)
 
-    def __init__(self, min_word_size, num_words):
-        self.min_word_size = min_word_size
+    def __init__(self, word_size, num_words):
+        self.word_size = word_size
         self.num_words = num_words
 
     def __repr__(self):

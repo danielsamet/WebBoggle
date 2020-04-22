@@ -10,26 +10,27 @@ def generate_boards(num_board=1000):
         db.session.commit()
 
 
-def get_board_stats(min_word_size="all"):
+def print_board_stats():
     stats = {}
 
-    word_sizes = [3, 4, 5] if min_word_size == "all" else min_word_size
+    word_sizes = list(range(3, 18))
+    board_count = BoggleBoard.query.count()
 
     for word_size in word_sizes:
         stats[word_size] = {}
 
-        word_counts = [count.num_words for count in WordCount.query.filter_by(min_word_size=word_size).all()]
+        word_counts = [count.num_words for count in WordCount.query.filter_by(word_size=word_size).all()]
 
-        stats[word_size]["ttl"] = len(word_counts)
-        stats[word_size]["min"] = min(word_counts)
-        stats[word_size]["max"] = max(word_counts)
-        stats[word_size]["avg"] = f"{sum(word_counts) / stats[word_size]['ttl']:.2f}"
+        stats[word_size]["ttl"] = len(word_counts)  # occurrences of the word size across boards
+        stats[word_size]["min"] = min(word_counts) if word_counts else 0  # least occurrences of the word size
+        stats[word_size]["max"] = max(word_counts) if word_counts else 0  # most occurrences of the word size
+        stats[word_size]["avg"] = f"{sum(word_counts) / board_count:.6f}" if word_counts else 0  # avg occ
 
-    return stats
+        print(f"{word_size} - {stats[word_size]}")
 
 
 if __name__ == '__main__':
     with create_app(Config).app_context():
         for _ in range(100):
             generate_boards(100)
-            print(get_board_stats())
+            print_board_stats()
