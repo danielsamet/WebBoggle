@@ -56,13 +56,14 @@ class BoggleBoard(db.Model):
             print(row)
 
     def generate_words(self, min_word_size=3):
-        return generate_valid_words(self.generate_board(), current_app.dictionary, min_word_size=min_word_size)
+        return generate_valid_words(self.generate_board(uppercase_u=True), current_app.dictionary,
+                                    min_word_size=min_word_size)
 
 
 class WordCount(db.Model):
     __tablename__ = "board_word_counts"
 
-    id = db.Column(db.String(6), primary_key=True)
+    id = db.Column(db.Integer, primary_key=True)
 
     board_id = db.Column(db.Integer, db.ForeignKey("boggle_boards.id"))
     board = db.relationship("BoggleBoard", back_populates="word_counts")

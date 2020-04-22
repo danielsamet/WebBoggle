@@ -26,9 +26,9 @@ def create_app(config_object=Config):
 
     @app.shell_context_processor  # adds automatic context to the shell
     def make_shell_context():
-        from app.models import BoggleBoard
+        from app.models import BoggleBoard, WordCount
 
-        return dict(app=app, db=db, BoggleBoard=BoggleBoard)
+        return dict(app=app, db=db, BoggleBoard=BoggleBoard, WordCount=WordCount)
 
     return app
 
