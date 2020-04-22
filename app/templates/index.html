@@ -16,7 +16,8 @@
         <div class="col-sm-4 my-auto">
         </div>
 
-        <table class="col-sm-4 mx-auto border p-2" id="boggle_board" style="max-width: 16em;">
+        <table class="col-sm-4 mx-auto p-2" id="boggle_board"
+               style="max-width: 18em; border: 1px solid black; background: #004F6E; color: #F6F4E1;">
             <tbody>
             <tr>
                 <td></td>
@@ -46,7 +47,7 @@
         </table>
 
         <div class="col-sm-4 my-auto">
-            <div class="accordion" id="accordionExample">
+            <div class="accordion" id="accordionExample" style="display: none;">
                 <div class="card">
                     <div class="card-header" id="headingOne">
                         <h2 class="mb-0">
@@ -67,9 +68,9 @@
 
     </div>
 
-    <button class="btn btn-success btn-lg font-weight-bold mt-5" id="generate_board">Generate Board</button>
+    <button class="btn btn-lg font-weight-bold mt-5" id="generate_board">Generate Board</button>
 
-    <div class="alert alert-primary mx-auto m-5" style="max-width: 18rem;">
+    <div class="alert mx-auto m-5" style="max-width: 18rem;">
         <label for="game_link" class="h5 mb-3">Share Game</label>
         <p class="">
             <a class="font-weight-bold" href="{{ url_for("routes.boggle_board", game_id=game_id) }}"
@@ -82,9 +83,9 @@
         <label for="game_code" class="h5 mb-3">Join Game</label>
         <div class="input-group">
             <input type="text" class="form-control" placeholder="Game Code" id="game_code"
-                   style="text-transform: uppercase;" maxlength="6">
+                   style="text-transform: uppercase; background: #F6F4E1;" maxlength="6">
             <div class="input-group-append">
-                <button class="btn btn-success" type="button" id="join_game">Join</button>
+                <button class="btn font-weight-bold" type="button" id="join_game">Join</button>
             </div>
         </div>
 

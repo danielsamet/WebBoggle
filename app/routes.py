@@ -27,7 +27,7 @@ def boggle_board(game_id):
     board = BoggleBoard.query.filter_by(id=game_id).first()
 
     if not board:
-        return redirect(url_for("index"))
+        return redirect(url_for("routes.index"))
 
     return render_template("index.html", game_id=board.id, dice=board.generate_board(),
                            words=sorted(board.generate_words()))

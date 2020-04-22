@@ -7,10 +7,8 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
           integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
 
-    <script
-            src="https://code.jquery.com/jquery-3.4.1.min.js"
-            integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
-            crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.0/jquery.min.js"
+            integrity="sha256-xNzN2a4ltkB44Mc/Jz3pT4iU1cmeR0FkXs4pru/JxaQ=" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
             integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
             crossorigin="anonymous"></script>
@@ -19,12 +17,28 @@
             crossorigin="anonymous"></script>
 
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <style>
+        a {
+            color: #004F6E;
+        }
+
+        .btn {
+            background: #F56E47;
+        }
+
+        .alert {
+            background: #F6F4E1;
+            color: #004F6E;
+        }
+    </style>
 </head>
-<body>
+<body style="background: #F0B949;">
+{# TODO: update CSS colouring using SASS -#}
 
 <div class="container text-center mt-4" style="min-width: 300px; max-width: 1080px; height: auto;">
-    <div class="alert alert-primary" role="alert">
-        <a class="h2 alert-heading" href="{{ url_for("routes.index") }}">WebBoggle</a>
+    <div class="alert" role="alert">
+        <a class="h1 alert-heading" href="{{ url_for("routes.index") }}">WebBoggle</a>
         <hr>
         <p class="mb-0">Generate boggle boards and share them with your friends so that you can play remotely!</p>
     </div>
@@ -34,7 +48,9 @@
 
 </div>
 
-<p class="w-100 text-center" style="bottom: 0; height: 25px;">Copyright <a href="https://github.com/CouchMaster789/WebBoggle">WebBoggle</a> 2020 &copy; <a href="https://github.com/CouchMaster789">Daniel Samet</a></p>
+<p class="w-100 text-center" style="bottom: 0; height: 25px; color: #004F6E;">Copyright <a
+        href="https://github.com/CouchMaster789/WebBoggle" class="font-weight-bold">WebBoggle</a> 2020 &copy; <a
+        href="https://github.com/CouchMaster789" class="font-weight-bold">Daniel Samet</a></p>
 
 {% block extra_scripts %}{% endblock extra_scripts %}
 
