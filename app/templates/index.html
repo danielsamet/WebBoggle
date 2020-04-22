@@ -4,7 +4,7 @@
 {% block main_content %}
     <style>
         td {
-            border: 2px black solid;
+            border: 4px #F6F4E1 solid;
             height: 2em;
             width: 2em;
             font-weight: bold;
@@ -71,16 +71,16 @@
     <button class="btn btn-lg font-weight-bold mt-5" id="generate_board">Generate Board</button>
 
     <div class="alert mx-auto m-5" style="max-width: 18rem;">
-        <label for="game_link" class="h5 mb-3">Share Game</label>
+        <label for="game_link" class="h4 font-weight-bold mb-3">Share Game</label>
         <p class="">
-            <a class="font-weight-bold" href="{{ url_for("routes.boggle_board", game_id=game_id) }}"
+            <a class="font-weight-bolder" href="{{ url_for("routes.boggle_board", game_id=game_id) }}"
                id="game_link">
             </a>
         </p>
 
         <hr>
 
-        <label for="game_code" class="h5 mb-3">Join Game</label>
+        <label for="game_code" class="h4 font-weight-bold mb-3">Join Game</label>
         <div class="input-group">
             <input type="text" class="form-control" placeholder="Game Code" id="game_code"
                    style="text-transform: uppercase; background: #F6F4E1;" maxlength="6">
