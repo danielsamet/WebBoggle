@@ -1,17 +1,10 @@
 {% extends "base.html" %}
 
+{% block extra_css %}
+    <link rel="stylesheet" href="{{ url_for("static", filename="css/main.css") }}">
+{% endblock %}
 
 {% block main_content %}
-    <style>
-        td {
-            border: 4px #F6F4E1 solid;
-            height: 2em;
-            width: 2em;
-            font-weight: bold;
-            font-size: xx-large;
-        }
-    </style>
-
     <div class="row mt-5">
         <div class="col-sm-4 my-auto">
         </div>
@@ -78,17 +71,6 @@
             </a>
         </p>
 
-        <hr>
-
-        <label for="game_code" class="h4 font-weight-bold mb-3">Join Game</label>
-        <div class="input-group">
-            <input type="text" class="form-control" placeholder="Game Code" id="game_code"
-                   style="text-transform: uppercase; background: #F6F4E1;" maxlength="6">
-            <div class="input-group-append">
-                <button class="btn font-weight-bold" type="button" id="join_game">Join</button>
-            </div>
-        </div>
-
     </div>
 {% endblock %}
 
@@ -140,10 +122,6 @@
                     update_valid_words(word_container, word_count, data["words"]);
                 })
             });
-
-            $("#join_game").click(function () {
-                window.location.href = "{{ url_for("routes.boggle_board", game_id=1234) }}".replace("1234", $("#game_code").val());
-            })
         });
     </script>
 {% endblock %}
