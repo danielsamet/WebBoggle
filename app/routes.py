@@ -6,6 +6,11 @@ from app.models import BoggleBoard
 bp = Blueprint("routes", __name__)
 
 
+@bp.app_errorhandler(404)
+def not_found_error():
+    return redirect(url_for("routes.index"))
+
+
 @bp.route('/')
 def index():
     return render_template("index.html")
