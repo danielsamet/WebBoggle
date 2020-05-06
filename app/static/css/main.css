@@ -5,3 +5,18 @@ td {
     font-weight: bold;
     font-size: xx-large;
 }
+
+.btn[data-toggle="collapse"] {
+    background: #F56E47;
+    color: black;
+    font-weight: bold;
+}
+
+#accordion {
+    border: 2px solid #004F6E;
+}
+
+#accordion .card-header {
+    background: #F56E47;
+    border-radius: 0;
+}

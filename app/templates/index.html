@@ -4,12 +4,14 @@
     <link rel="stylesheet" href="{{ url_for("static", filename="css/main.css") }}">
 {% endblock %}
 
+{% block page_title %}Quick Play{% endblock %}
+
 {% block main_content %}
-    <div class="row mt-5">
-        <div class="col-sm-4 my-auto">
+    <div class="row mt-5" style="height: 22em;">
+        <div class="col-sm-3 my-auto">
         </div>
 
-        <table class="col-sm-4 mx-auto p-2" id="boggle_board"
+        <table class="col-sm-6 mx-auto p-2" id="boggle_board"
                style="max-width: 18em; border: 1px solid black; background: #004F6E; color: #F6F4E1;">
             <tbody>
             <tr>
@@ -39,21 +41,19 @@
             </tbody>
         </table>
 
-        <div class="col-sm-4 my-auto">
-            <div class="accordion" id="accordionExample" style="display: none;">
-                <div class="card">
-                    <div class="card-header" id="headingOne">
-                        <h2 class="mb-0">
-                            <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapseOne"
-                                    aria-expanded="true" aria-controls="collapseOne">
-                                <b>Valid Words</b> <span id="word_count"></span>
-                            </button>
-                        </h2>
-                    </div>
+        <div class="col-sm-3 my-auto">
+            <div id="accordion">
+                <div class="card-header">
+                    <h5 class="mb-0">
+                        <button class="btn btn-link" data-toggle="collapse" data-target="#collapseOne"
+                                aria-expanded="true" aria-controls="collapseOne">
+                            Valid Words <span id="word_count"></span>
+                        </button>
+                    </h5>
+                </div>
 
-                    <div id="collapseOne" class="collapse" data-parent="#accordionExample">
-                        <div class="card-body overflow-auto" style="height: 10em;" id="word_container">
-                        </div>
+                <div id="collapseOne" class="collapse" aria-labelledby="headingOne" data-parent="#accordion">
+                    <div class="card-body pt-1" id="word_container" style="height: 18em; overflow: auto;">
                     </div>
                 </div>
             </div>
@@ -82,16 +82,18 @@
                     table.rows[row].cells[column].innerHTML = board[row][column];
         }
 
-        function update_valid_words(word_container, word_count, words) {
+        function update_valid_words(word_container, word_count, words, time_taken) {
             word_container.html("");
             word_count.text("(" + words.length + ")");
-            word_container.append("<ul class=\"list-group\" id=\"word_list\"></ul>");
+            word_container.append("<ul class=\"m-2 list-group\" id=\"word_list\"></ul>");
 
             let word_list = $("#word_list");
             words.forEach((word) => {
-                word_list.append("<li class='list-group-item font-weight-bold'>" + word.toLowerCase() + "</li>")
+                word_list.append("<li style='list-style-type: none;' class='font-weight-bold'>" + word.toLowerCase() + "</li>")
             });
-            word_container.append("<p class=\"mb-0 mt-4\" style=\"font-style: italic;\">As per the Collins Scrabble Dictionary 2019</p>");
+            word_container.append("<small class='' style=\"font-style: italic;\">Board solved in " + time_taken + "ms</small>")
+
+            word_container.append("<p class=\"mb-0 mt-3\" style=\"font-style: italic;\">As per the Collins Scrabble Dictionary 2019</p>");
         }
 
         $(document).ready(function () {
@@ -104,7 +106,7 @@
                 build_board(table, {{ dice|safe }});
                 {# TODO: investigate method to display the dice without using the safe filter #}
                 game_link.text("{{ game_id }}");
-                update_valid_words(word_container, word_count, {{ words|safe }});
+                update_valid_words(word_container, word_count, {{ words|safe }}, {{ time_taken }});
             {%- endif %}
 
             $("#generate_board").click(function () {
@@ -118,8 +120,8 @@
 
                     window.history.pushState('join', 'Join', '/join/' + data["game_id"]);
                     {#TODO: investigate how to change the url but maintain the ability to traverse back and forth between games using the back and forward buttons#}
-
-                    update_valid_words(word_container, word_count, data["words"]);
+                    console.log(data)
+                    update_valid_words(word_container, word_count, data["words"], data["time_taken"]);
                 })
             });
         });

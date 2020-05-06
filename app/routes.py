@@ -1,3 +1,5 @@
+import time
+
 from flask import render_template, jsonify, redirect, url_for, Blueprint
 
 from app import db
@@ -18,13 +20,17 @@ def index():
 
 @bp.route("/generate_board", methods=["POST"])
 def generate_board():
-    boggle_board = BoggleBoard()
+    board = BoggleBoard()
 
-    db.session.add(boggle_board)
+    db.session.add(board)
     db.session.commit()
 
-    return jsonify({"game_id": boggle_board.id, "board": boggle_board.generate_board(),
-                    "words": sorted(boggle_board.generate_words())}), 200
+    start = time.time()
+    words = board.generate_words()
+    time_taken = f"{(time.time() - start) * 1000:.4f}"
+
+    return jsonify({"game_id": board.id, "board": board.generate_board(),
+                    "words": sorted(words), "time_taken": time_taken}), 200
 
 
 @bp.route('/join/<game_id>')
@@ -34,5 +40,9 @@ def boggle_board(game_id):
     if not board:
         return redirect(url_for("routes.index"))
 
+    start = time.time()
+    words = board.generate_words()
+    time_taken = f"{(time.time() - start) * 1000:.4f}"
+
     return render_template("index.html", game_id=board.id, dice=board.generate_board(),
-                           words=sorted(board.generate_words()))
+                           words=sorted(words), time_taken=time_taken)
